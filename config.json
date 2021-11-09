@@ -1,0 +1,5 @@
+{
+    "array_size" : 5,
+    "timeout_time" : 15,
+    "max_concurrent_routines" : 3
+}
