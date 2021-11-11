@@ -1,6 +1,20 @@
 package main
 
-func cerinta1(input []string) []string {
+type CMD_ID int
+
+const (
+	CMD_1 CMD_ID = iota
+	CMD_2
+	CMD_3
+)
+
+type command struct {
+	Id     CMD_ID
+	Client *client
+	Args   []string
+}
+
+func command1(input []string) []string {
 
 	var output []string
 
