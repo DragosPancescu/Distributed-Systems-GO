@@ -1,6 +1,10 @@
 package common
 
 import (
+	"fmt"
+	"io/ioutil"
+	"os"
+
 	"github.com/DragosPancescu/SD-Tema1/client"
 )
 
@@ -16,8 +20,21 @@ type Command struct {
 	Args   []string
 }
 
-func Command_handler(id string) {
+func Command_help() string {
 
+	fmt.Println("The server is processing the data...")
+	// Opens the help file
+	help_file, err := os.Open("Data\\help.txt")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer help_file.Close()
+
+	// Reads the file conntents
+	file_contents, _ := ioutil.ReadAll(help_file)
+
+	return string(file_contents)
 }
 
 func Command1(input []string) []string {

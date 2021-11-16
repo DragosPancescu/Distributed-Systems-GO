@@ -22,23 +22,23 @@ func Read_config(path string) Config {
 	// Input -> File path [string]
 	// Output -> Config Object [config]
 
-	var jsonOutput Config
+	var json_output Config
 
 	// Opens the JSON file
-	jsonFile, err := os.Open(path)
+	json_file, err := os.Open(path)
 
 	if err != nil {
 		fmt.Println(err)
 	}
-	defer jsonFile.Close()
+	defer json_file.Close()
 
 	// Reads the file conntents
-	fileContents, _ := ioutil.ReadAll(jsonFile)
+	file_contents, _ := ioutil.ReadAll(json_file)
 
-	err = json.Unmarshal(fileContents, &jsonOutput)
+	err = json.Unmarshal(file_contents, &json_output)
 	if err != nil {
 		fmt.Println(err)
 	}
 
-	return jsonOutput
+	return json_output
 }

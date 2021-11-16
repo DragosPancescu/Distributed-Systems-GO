@@ -2,22 +2,23 @@ package client
 
 import (
 	"net"
+	"strings"
 )
 
 type Client struct {
 	Name       string
 	Connection net.Conn
-	Commands   chan<- int
 }
 
-/*
-	//Connect to server
-	server_connection, _ := net.Dial("tcp", "127.0.0.1:8080")
+func Create_client(name string, conn net.Conn) Client {
+	// Remove trailing \n
+	name = strings.TrimRight(name, "\n")
 
-	for {
-		// Construim un mesaj (comanda)
-		// -----
-
-		// fmt.Printf(server_connection, mesaj + '\n')
+	// Create new client
+	client := Client{
+		Name:       name,
+		Connection: conn,
 	}
-*/
+
+	return client
+}
