@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net"
 	"strconv"
-	"strings"
 
 	"github.com/DragosPancescu/SD-Tema1/client"
 	"github.com/DragosPancescu/SD-Tema1/common"
@@ -16,9 +15,10 @@ func handle_connection(conn net.Conn) {
 	conn.Write([]byte("Please choose a name: "))
 
 	name, _ := bufio.NewReader(conn).ReadString('\n')
-	new_client := client.Create_client(name, conn)
+	new_client := client.Create_client(name, conn, common.Get_random_color())
 
-	fmt.Println(new_client.Name + " s-a alaturat serverului!")
+	fmt.Println(common.Color_string((new_client.Name + " connected to the server!"), new_client.Color))
+	new_client.Connection.Write([]byte(common.Color_string(("Hi " + new_client.Name + ", please use command /help to see the server capabilitites.\n"), new_client.Color)))
 
 	for {
 		message, err := bufio.NewReader(new_client.Connection).ReadString('\n')
@@ -28,15 +28,36 @@ func handle_connection(conn net.Conn) {
 			return
 		}
 
-		// Sanitize the string
-		message = strings.TrimRight(message, "\n")
+		// Parse the message
+		command, args := common.Parse_message(message)
 
+		switch command {
 		// Handle help message
-		if message == "/help" {
-			fmt.Println(new_client.Name + " sent a help request")
-			help_string := common.Command_help()
-			fmt.Println("Server is sending a response to " + new_client.Name)
-			new_client.Connection.Write([]byte(help_string))
+		case "/help":
+			{
+				fmt.Println(common.Color_string((new_client.Name + " sent a help request."), new_client.Color))
+				help_string := common.Command_help()
+				fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
+				new_client.Connection.Write([]byte(common.Color_string(help_string, new_client.Color)))
+			}
+		case "/exit":
+			{
+				new_client.Connection.Write([]byte(common.Color_string(("See you soon " + new_client.Name + ".\n"), new_client.Color)))
+				fmt.Println(common.Color_string((new_client.Name + " is leaving the server."), new_client.Color))
+				new_client.Connection.Close()
+			}
+		case "/reverse_sum":
+			{
+				fmt.Println(common.Color_string((new_client.Name + " sent a reverse_sum request."), new_client.Color))
+				reversed_sum := common.Reverse_sum(args)
+				fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
+				new_client.Connection.Write([]byte(common.Color_string("Reversed sum = "+strconv.Itoa(reversed_sum)+"\n", new_client.Color)))
+			}
+		default:
+			{
+				fmt.Println(common.Color_string((new_client.Name + " sent an unknown request"), new_client.Color))
+				new_client.Connection.Write([]byte(common.Color_string("That request is not valid, please try again.\n", new_client.Color)))
+			}
 		}
 	}
 }
@@ -51,7 +72,7 @@ func main() {
 		return
 	}
 
-	fmt.Println("Server Started on port:" + strconv.Itoa(cfg.Port))
+	fmt.Println("Server started on port:" + strconv.Itoa(cfg.Port))
 	defer server.Close()
 
 	for {

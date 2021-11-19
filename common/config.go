@@ -9,12 +9,11 @@ import (
 
 // Struct to map the config file to
 type Config struct {
-	Array_size              int    `json:"array_size"`
-	Timeout_time            int    `json:"timeout_time"`
-	Max_concurrent_routines int    `json:"max_concurrent_routines"`
-	Host                    string `json:"host"`
-	Port                    int    `json:"port"`
-	Conn_type               string `json:"conn_type"`
+	Array_size   int    `json:"array_size"`
+	Timeout_time int    `json:"timeout_time"`
+	Host         string `json:"host"`
+	Port         int    `json:"port"`
+	Conn_type    string `json:"conn_type"`
 }
 
 func Read_config(path string) Config {

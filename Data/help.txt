@@ -1,5 +1,7 @@
+
 The server has a bunch of commands to try, you can call them using /command_name [args]:
 - /help -> Shows this list of commands.
 - /command1 -> 
 - /command2 ->
-- /inverse_sum [args] -> args represents a list of integers (separated by whitespaces) and the servers returns the sum of those ints after inversing their digits.
+- /reverse_sum [args] -> Args represents a list of integers (separated by whitespaces) and the servers returns the sum of those ints after inversing their digits.
+- /exit -> Exits the server.
