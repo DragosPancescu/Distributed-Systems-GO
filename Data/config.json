@@ -1,6 +1,5 @@
 {
-    "array_size" : 5,
-    "timeout_time" : 15,
+    "max_array_size" : 4,
     "host": "localhost",
     "port" : 8080,
     "conn_type" : "tcp"

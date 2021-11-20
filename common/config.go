@@ -7,13 +7,12 @@ import (
 	"os"
 )
 
-// Struct to map the config file to
+// Struct to hold the config file data
 type Config struct {
-	Array_size   int    `json:"array_size"`
-	Timeout_time int    `json:"timeout_time"`
-	Host         string `json:"host"`
-	Port         int    `json:"port"`
-	Conn_type    string `json:"conn_type"`
+	Max_array_size int    `json:"max_array_size"`
+	Host           string `json:"host"`
+	Port           int    `json:"port"`
+	Conn_type      string `json:"conn_type"`
 }
 
 func Read_config(path string) Config {

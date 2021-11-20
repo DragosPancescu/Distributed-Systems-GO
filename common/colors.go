@@ -1,6 +1,9 @@
 package common
 
-import "math/rand"
+import (
+	"math/rand"
+	"time"
+)
 
 const (
 	color_red    = "\033[0;31m"
@@ -17,6 +20,8 @@ func Color_string(s string, c string) string {
 }
 
 func Get_random_color() string {
+
+	rand.Seed(time.Now().UnixNano())
 	rng := rand.Intn(6)
 	color := ""
 
