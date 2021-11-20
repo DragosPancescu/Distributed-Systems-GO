@@ -1,5 +1,5 @@
 {
-    "max_array_size" : 4,
+    "max_array_size" : 5,
     "host": "localhost",
     "port" : 8080,
     "conn_type" : "tcp"

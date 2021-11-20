@@ -59,7 +59,7 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 					output := common.Command1(args)
 					fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
 
-					new_client.Connection.Write([]byte("Response: " + common.Color_string(strings.Join(output, " "), new_client.Color)))
+					new_client.Connection.Write([]byte("Response: " + common.Color_string(strings.Join(output, " ")+"\n", new_client.Color)))
 				}
 			case "/reverse_sum":
 				{
