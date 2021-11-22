@@ -3,9 +3,11 @@ package common
 import (
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 func Command_help() string {
@@ -33,8 +35,24 @@ func Parse_message(message string) (string, []string) {
 	return message_list[0], message_list[1:]
 }
 
+func check_elem_len(input []string) bool {
+	length := len(input[0])
+
+	for i := 1; i < len(input); i++ {
+		if length != len(input[i]) {
+			return false
+		}
+	}
+	return true
+}
+
 // Command 1 from the homework
-func Command1(input []string) []string {
+func Command1(input []string) ([]string, bool) {
+
+	// Check if elements have the same length
+	if check_elem_len(input) {
+		return nil, false
+	}
 
 	var output []string
 
@@ -46,12 +64,52 @@ func Command1(input []string) []string {
 		output = append(output, aux_string)
 	}
 
-	return output
+	return output, true
+}
+
+// Extracts a number from a string (Ex: a1b4c2 -> 142)
+func extract_number(input string) (int, bool) {
+	output := 0
+	extracted_any := false
+
+	for i := 0; i < len(input); i++ {
+		if unicode.IsDigit(rune(input[i])) {
+			digit, _ := strconv.Atoi(string(input[i]))
+			output = output*10 + digit
+			extracted_any = true
+		}
+	}
+
+	return output, extracted_any
+}
+
+// Checks if a numbers is a perfect square
+func check_perfect_square(input float64) bool {
+	square_root := math.Sqrt(input)
+
+	return square_root*square_root == input
+}
+
+// Command 2 from the homework
+func Command2(input []string) int {
+	counter := 0
+
+	for i := 0; i < len(input); i++ {
+		// Extract the number from the string element
+		number, extracted_any := extract_number(input[i])
+
+		// Check if it is a perfect square
+		if extracted_any && check_perfect_square(float64(number)) {
+			counter++
+		}
+	}
+
+	return counter
 }
 
 func reverse_number(input string) (int, bool) {
 
-	// Checkf if number is negative
+	// Check if number is negative
 	is_negative := false
 	if input[0] == '-' {
 		is_negative = true
@@ -84,7 +142,7 @@ func reverse_number(input string) (int, bool) {
 }
 
 // Command 3 from the homework
-func Reverse_sum(input []string) (int, bool) {
+func Command3(input []string) (int, bool) {
 	output := 0
 
 	for i := 0; i < len(input); i++ {

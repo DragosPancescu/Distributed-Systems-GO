@@ -15,6 +15,7 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 	conn.Write([]byte("Welcome to the server!\n"))
 	conn.Write([]byte("Please choose a name: "))
 
+	// Handle error
 	name, _ := bufio.NewReader(conn).ReadString('\n')
 	new_client := client.Create_client(name, conn, common.Get_random_color())
 
@@ -56,21 +57,33 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 			case "/command1":
 				{
 					fmt.Println(common.Color_string((new_client.Name + " sent a command1 request."), new_client.Color))
-					output := common.Command1(args)
-					fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
+					output, good_format := common.Command1(args)
 
-					new_client.Connection.Write([]byte("Response: " + common.Color_string(strings.Join(output, " ")+"\n", new_client.Color)))
-				}
-			case "/reverse_sum":
-				{
-					fmt.Println(common.Color_string((new_client.Name + " sent a reverse_sum request."), new_client.Color))
-					reversed_sum, good_format := common.Reverse_sum(args)
 					fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
-
 					if !good_format {
 						new_client.Connection.Write([]byte(common.Color_string("Incorrect data format, please try again.\n", new_client.Color)))
 					} else {
-						new_client.Connection.Write([]byte(common.Color_string("Reversed sum = "+strconv.Itoa(reversed_sum)+"\n", new_client.Color)))
+						new_client.Connection.Write([]byte(common.Color_string("Response: "+strings.Join(output, " ")+"\n", new_client.Color)))
+					}
+				}
+			case "/command2":
+				{
+					fmt.Println(common.Color_string((new_client.Name + " sent a command2 request."), new_client.Color))
+					output := common.Command2(args)
+					fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
+
+					new_client.Connection.Write([]byte(common.Color_string("Response: "+strconv.Itoa(output)+"\n", new_client.Color)))
+				}
+			case "/command3":
+				{
+					fmt.Println(common.Color_string((new_client.Name + " sent a command3 request."), new_client.Color))
+					reversed_sum, good_format := common.Command3(args)
+
+					fmt.Println(common.Color_string(("Server is sending a response to " + new_client.Name + "."), new_client.Color))
+					if !good_format {
+						new_client.Connection.Write([]byte(common.Color_string("Incorrect data format, please try again.\n", new_client.Color)))
+					} else {
+						new_client.Connection.Write([]byte(common.Color_string("Response: "+strconv.Itoa(reversed_sum)+"\n", new_client.Color)))
 					}
 				}
 			default:

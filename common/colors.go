@@ -5,7 +5,8 @@ import (
 	"time"
 )
 
-const (
+// Global color variables
+var (
 	color_red    = "\033[0;31m"
 	color_green  = "\033[0;32m"
 	color_yellow = "\033[0;33m"
@@ -15,10 +16,27 @@ const (
 	color_reset  = "\033[0m"
 )
 
+// Init function if os is windows
+// because command prompt does not support colors.
+/*
+func init() {
+	if runtime.GOOS == "windows" {
+		color_red = ""
+		color_green = ""
+		color_yellow = ""
+		color_blue = ""
+		color_purple = ""
+		color_cyan = ""
+		color_reset = ""
+	}
+}*/
+
+// Function to color a string
 func Color_string(s string, c string) string {
 	return c + s + color_reset
 }
 
+// Select a random color to use
 func Get_random_color() string {
 
 	rand.Seed(time.Now().UnixNano())
