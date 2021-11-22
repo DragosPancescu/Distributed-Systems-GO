@@ -2,6 +2,7 @@ package common
 
 import (
 	"math/rand"
+	"runtime"
 	"time"
 )
 
@@ -18,7 +19,6 @@ var (
 
 // Init function if os is windows
 // because command prompt does not support colors.
-/*
 func init() {
 	if runtime.GOOS == "windows" {
 		color_red = ""
@@ -29,7 +29,7 @@ func init() {
 		color_cyan = ""
 		color_reset = ""
 	}
-}*/
+}
 
 // Function to color a string
 func Color_string(s string, c string) string {

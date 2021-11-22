@@ -9,16 +9,14 @@ import (
 
 // Struct to hold the config file data
 type Config struct {
-	Max_array_size int    `json:"max_array_size"`
-	Host           string `json:"host"`
-	Port           int    `json:"port"`
-	Conn_type      string `json:"conn_type"`
+	Max_args_size int    `json:"max_args_size"`
+	Host          string `json:"host"`
+	Port          int    `json:"port"`
+	Conn_type     string `json:"conn_type"`
 }
 
+// Function that handles the reading of the config file
 func Read_config(path string) Config {
-	// Function that handles the reading of the config file
-	// Input -> File path [string]
-	// Output -> Config Object [config]
 
 	var json_output Config
 

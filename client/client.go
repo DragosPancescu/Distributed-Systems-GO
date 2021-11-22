@@ -1,5 +1,7 @@
 package client
 
+// This package contains the client related information
+
 import (
 	"net"
 	"strings"

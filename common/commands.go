@@ -3,13 +3,35 @@ package common
 import (
 	"fmt"
 	"io/ioutil"
-	"math"
 	"os"
 	"strconv"
 	"strings"
-	"unicode"
+
+	"github.com/DragosPancescu/SD-Tema1/client"
+	"github.com/DragosPancescu/SD-Tema1/utils"
 )
 
+// Parses a message sent from a user to the server
+// It takes the first element as the command name
+// The rest of the elements as the arguments
+func Parse_message(message string) (string, []string) {
+
+	// Remove newline character
+	message = strings.TrimRight(message, "\n")
+
+	// Remove accidental space after command or arguments
+	if message[len(message)-1] == ' ' {
+		message = strings.TrimRight(message, " ")
+	}
+
+	message_list := strings.Split(message, " ")
+
+	return message_list[0], message_list[1:]
+}
+
+// ---------------------------------------COMMANDS----------------------------------------------//
+
+// Send the help panel to the user
 func Command_help() string {
 
 	fmt.Println("The server is processing the data...")
@@ -27,30 +49,11 @@ func Command_help() string {
 	return string(file_contents)
 }
 
-func Parse_message(message string) (string, []string) {
-	message = strings.TrimRight(message, "\n")
-
-	message_list := strings.Split(message, " ")
-
-	return message_list[0], message_list[1:]
-}
-
-func check_elem_len(input []string) bool {
-	length := len(input[0])
-
-	for i := 1; i < len(input); i++ {
-		if length != len(input[i]) {
-			return false
-		}
-	}
-	return true
-}
-
 // Command 1 from the homework
 func Command1(input []string) ([]string, bool) {
 
 	// Check if elements have the same length
-	if check_elem_len(input) {
+	if !utils.Check_elem_len(input) {
 		return nil, false
 	}
 
@@ -67,39 +70,16 @@ func Command1(input []string) ([]string, bool) {
 	return output, true
 }
 
-// Extracts a number from a string (Ex: a1b4c2 -> 142)
-func extract_number(input string) (int, bool) {
-	output := 0
-	extracted_any := false
-
-	for i := 0; i < len(input); i++ {
-		if unicode.IsDigit(rune(input[i])) {
-			digit, _ := strconv.Atoi(string(input[i]))
-			output = output*10 + digit
-			extracted_any = true
-		}
-	}
-
-	return output, extracted_any
-}
-
-// Checks if a numbers is a perfect square
-func check_perfect_square(input float64) bool {
-	square_root := math.Sqrt(input)
-
-	return square_root*square_root == input
-}
-
 // Command 2 from the homework
 func Command2(input []string) int {
 	counter := 0
 
 	for i := 0; i < len(input); i++ {
 		// Extract the number from the string element
-		number, extracted_any := extract_number(input[i])
+		number, extracted_any := utils.Extract_number(input[i])
 
 		// Check if it is a perfect square
-		if extracted_any && check_perfect_square(float64(number)) {
+		if extracted_any && utils.Check_perfect_square(float64(number)) {
 			counter++
 		}
 	}
@@ -107,46 +87,12 @@ func Command2(input []string) int {
 	return counter
 }
 
-func reverse_number(input string) (int, bool) {
-
-	// Check if number is negative
-	is_negative := false
-	if input[0] == '-' {
-		is_negative = true
-		input = input[1:]
-	}
-
-	// Reverse digits in a number
-	input_int, err := strconv.Atoi(input)
-	if err != nil {
-		return -1, false
-	}
-
-	reversed := 0
-	factor := 1
-
-	for i := 0; i < len(input); i++ {
-		digit := input_int % 10
-		input_int /= 10
-
-		reversed = (reversed * factor) + digit
-		factor *= 10
-		fmt.Println(strconv.Itoa(reversed))
-	}
-
-	if is_negative {
-		reversed *= -1
-	}
-
-	return reversed, true
-}
-
 // Command 3 from the homework
 func Command3(input []string) (int, bool) {
 	output := 0
 
 	for i := 0; i < len(input); i++ {
-		reversed_number, good_format := reverse_number(input[i])
+		reversed_number, good_format := utils.Reverse_number(input[i])
 
 		if good_format {
 			output += reversed_number
@@ -156,4 +102,127 @@ func Command3(input []string) (int, bool) {
 	}
 
 	return output, true
+}
+
+// Command4 from the homework
+func Command4(input []string) (float64, bool) {
+
+	// Checks the first 2 arguments
+	a, err_a := strconv.Atoi(input[0])
+	b, err_b := strconv.Atoi(input[1])
+
+	if err_a != nil || err_b != nil {
+		return -1, false
+	}
+
+	sum := 0
+	counter := 0
+	for i := 2; i < len(input); i++ {
+		number, err := strconv.Atoi(input[i])
+		if err != nil {
+			return -1, false
+		}
+
+		if utils.Digits_sum(number) >= a && utils.Digits_sum(number) <= b {
+			sum += number
+			counter++
+		}
+	}
+
+	if counter == 0 {
+		return 0, true
+	}
+	return float64(sum / counter), true
+}
+
+// ---------------------------------------COMMANDS HANDLERS----------------------------------------------//
+// All of this might need refactoring as there is a lot of duplicate code
+// Did not have the time tho :(
+// TODO: Refactor this
+
+func Handle_help_command(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a help request."), client.Color))
+	help_string := Command_help()
+
+	fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+	client.Connection.Write([]byte(Color_string(help_string, client.Color)))
+}
+
+func Handle_exit_command(client client.Client, args []string) {
+	client.Connection.Write([]byte(Color_string(("See you soon " + client.Name + ".\n"), client.Color)))
+	fmt.Println(Color_string((client.Name + " is leaving the server."), client.Color))
+	client.Connection.Close()
+}
+
+func Handle_command1(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a command1 request."), client.Color))
+
+	if len(args) < 1 {
+		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
+		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
+	} else {
+		output, good_format := Command1(args)
+
+		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+		if !good_format {
+			client.Connection.Write([]byte(Color_string("Incorrect data format, please try again.\n", client.Color)))
+		} else {
+			client.Connection.Write([]byte(Color_string("Response: "+strings.Join(output, " ")+"\n", client.Color)))
+		}
+	}
+}
+
+func Handle_command2(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a command2 request."), client.Color))
+
+	if len(args) < 1 {
+		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
+		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
+	} else {
+		output := Command2(args)
+
+		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+		client.Connection.Write([]byte(Color_string("Response: "+strconv.Itoa(output)+"\n", client.Color)))
+	}
+}
+
+func Handle_command3(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a command3 request."), client.Color))
+
+	if len(args) < 1 {
+		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
+		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
+	} else {
+		output, good_format := Command3(args)
+
+		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+		if !good_format {
+			client.Connection.Write([]byte(Color_string("Incorrect data format, please try again.\n", client.Color)))
+		} else {
+			client.Connection.Write([]byte(Color_string("Response: "+strconv.Itoa(output)+"\n", client.Color)))
+		}
+	}
+}
+
+func Handle_command4(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a command4 request."), client.Color))
+
+	if len(args) < 2 {
+		client.Connection.Write([]byte(Color_string("The command need at least 2 arguments\n", client.Color)))
+		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
+	} else {
+		output, good_format := Command4(args)
+
+		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+		if !good_format {
+			client.Connection.Write([]byte(Color_string("Incorrect data format, please try again.\n", client.Color)))
+		} else {
+			client.Connection.Write([]byte(Color_string("Response: "+fmt.Sprint(output)+"\n", client.Color)))
+		}
+	}
+}
+
+func Handle_unknown_command(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent an unknown request."), client.Color))
+	client.Connection.Write([]byte(Color_string("That request is not valid, please try again.\n", client.Color)))
 }
