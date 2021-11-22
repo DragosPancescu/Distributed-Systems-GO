@@ -1,4 +1,4 @@
-# Welcome to Client-Server Application for the SD laboratory
+# Welcome to Client-Server Application for the Distributed Systems Laboratory
 
 ## I recommend using an utility program like NetCat for connecting to the server after running the command:
 The server starts on port 8080 by default, but it can be configured from [Data\config.json](https://github.com/DragosPancescu/SD-Tema1/blob/main/Data/config.json)  
