@@ -34,7 +34,7 @@ func Command_help() string {
 	help_file, err := os.Open("Data\\help.txt")
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error: " + err.Error())
 	}
 	defer help_file.Close()
 

@@ -6,3 +6,5 @@ The server has a bunch of commands to try, you can call them using /command_name
 - /command3 [args] - returns the sum of the arguments list after their digits are reversed (args should be a list of integers).
 - /command4 [args] - returns the arithmetic mean of the elements that have the digit sum between the first 2 arguments (args should be a list of integers)
 - /exit -> Exits the server.
+
+~
