@@ -16,13 +16,8 @@ import (
 // The rest of the elements as the arguments
 func Parse_message(message string) (string, []string) {
 
-	// Remove newline character
-	message = strings.TrimRight(message, "\n")
-
-	// Remove accidental space after command or arguments
-	if message[len(message)-1] == ' ' {
-		message = strings.TrimRight(message, " ")
-	}
+	// Remove newline, carriage return and accidental space characters
+	message = strings.TrimRight(message, " \r\n")
 
 	message_list := strings.Split(message, " ")
 

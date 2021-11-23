@@ -32,8 +32,8 @@ func init() {
 }
 
 // Function to color a string
-func Color_string(s string, c string) string {
-	return c + s + color_reset
+func Color_string(input string, color string) string {
+	return color + input + color_reset
 }
 
 // Select a random color to use

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net"
 	"strconv"
+	"strings"
 
 	"github.com/DragosPancescu/SD-Tema1/client"
 	"github.com/DragosPancescu/SD-Tema1/common"
@@ -13,7 +14,7 @@ import (
 func handle_connection(conn net.Conn, cfg common.Config) {
 	// Welcome messages to the client, prompting for a name
 	conn.Write([]byte("Welcome to the server!\n"))
-	conn.Write([]byte("Please choose a name: "))
+	conn.Write([]byte("Please choose a name:\n"))
 
 	// Handle error
 	name, err := bufio.NewReader(conn).ReadString('\n')
@@ -24,7 +25,7 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 	}
 
 	// Creates a client object
-	new_client := client.Create_client(name, conn, common.Get_random_color())
+	new_client := client.Create_client(strings.TrimRight(name, "\r\n"), conn, common.Get_random_color())
 
 	fmt.Println(common.Color_string((new_client.Name + " connected to the server!"), new_client.Color))
 	new_client.Connection.Write([]byte(common.Color_string(("Hi " + new_client.Name + ", please use command /help to see the server capabilitites.\n"), new_client.Color)))
