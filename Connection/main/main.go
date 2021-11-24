@@ -71,6 +71,7 @@ func main() {
 		writer.WriteString(message)
 		writer.Flush()
 
+		// Use different delim if the command is help
 		delim := '\n'
 		if strings.Contains(message, "/help") {
 			delim = '~'
@@ -83,11 +84,8 @@ func main() {
 			return
 		}
 
-		// Remove the carriage return
-		response = strings.Trim(response, "\r")
-		if delim == '~' {
-			response = response[1:]
-		}
+		// Remove the carriage return or any custom delimitator characters
+		response = strings.Trim(response, "~\r")
 		fmt.Print(response)
 
 		if strings.Contains(response, "See you soon") {

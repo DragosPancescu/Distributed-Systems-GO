@@ -9,10 +9,11 @@ import (
 
 // Struct to hold the config file data
 type Config struct {
-	Max_args_size int    `json:"max_args_size"`
-	Host          string `json:"host"`
-	Port          int    `json:"port"`
-	Conn_type     string `json:"conn_type"`
+	Max_args_size  int    `json:"max_args_size"`
+	Host           string `json:"host"`
+	Port           int    `json:"port"`
+	Conn_type      string `json:"conn_type"`
+	Help_file_path string `json:"help_file"`
 }
 
 // Function that handles the reading of the config file

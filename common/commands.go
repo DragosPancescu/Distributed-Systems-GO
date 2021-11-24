@@ -27,11 +27,11 @@ func Parse_message(message string) (string, []string) {
 // ---------------------------------------COMMANDS----------------------------------------------//
 
 // Send the help panel to the user
-func Command_help() string {
+func command_help(file_path string) string {
 
 	fmt.Println("The server is processing the data...")
 	// Opens the help file
-	help_file, err := os.Open("Data\\help.txt")
+	help_file, err := os.Open(file_path)
 
 	if err != nil {
 		fmt.Println("Error: " + err.Error())
@@ -44,8 +44,8 @@ func Command_help() string {
 	return string(file_contents)
 }
 
-// Command 1 from the homework
-func Command1(input []string) ([]string, bool) {
+// Requirement 1 from the homework
+func command1(input []string) ([]string, bool) {
 
 	// Check if elements have the same length
 	if !utils.Check_elem_len(input) {
@@ -65,8 +65,8 @@ func Command1(input []string) ([]string, bool) {
 	return output, true
 }
 
-// Command 2 from the homework
-func Command2(input []string) int {
+// Requirement 2 from the homework
+func command2(input []string) int {
 	counter := 0
 
 	for i := 0; i < len(input); i++ {
@@ -74,16 +74,18 @@ func Command2(input []string) int {
 		number, extracted_any := utils.Extract_number(input[i])
 
 		// Check if it is a perfect square
-		if extracted_any && utils.Check_perfect_square(float64(number)) {
-			counter++
+		if extracted_any {
+			if utils.Check_perfect_square(float64(number)) {
+				counter++
+			}
 		}
 	}
 
 	return counter
 }
 
-// Command 3 from the homework
-func Command3(input []string) (int, bool) {
+// Requirement 3 from the homework
+func command3(input []string) (int, bool) {
 	output := 0
 
 	for i := 0; i < len(input); i++ {
@@ -99,8 +101,8 @@ func Command3(input []string) (int, bool) {
 	return output, true
 }
 
-// Command4 from the homework
-func Command4(input []string) (float64, bool) {
+// Requirement from the homework
+func command4(input []string) (float64, bool) {
 
 	// Checks the first 2 arguments
 	a, err_a := strconv.Atoi(input[0])
@@ -130,20 +132,39 @@ func Command4(input []string) (float64, bool) {
 	return float64(sum / counter), true
 }
 
+// Requirement 5 from homework
+func command5(input []string) []string {
+	var output []string
+
+	for i := 0; i < len(input); i++ {
+		if utils.Check_binary(input[i]) {
+			decimal, err := strconv.ParseInt(input[i], 2, 64)
+			if err != nil {
+				fmt.Println("Error: " + err.Error())
+				return nil
+			}
+
+			output = append(output, strconv.Itoa(int(decimal)))
+		}
+	}
+
+	return output
+}
+
 // ---------------------------------------COMMANDS HANDLERS----------------------------------------------//
 // All of this might need refactoring as there is a lot of duplicate code
 // Did not have the time tho :(
 // TODO: Refactor this
 
-func Handle_help_command(client client.Client, args []string) {
+func Handle_help_command(client client.Client, file_path string) {
 	fmt.Println(Color_string((client.Name + " sent a help request."), client.Color))
-	help_string := Command_help()
+	help_string := command_help(file_path)
 
 	fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
 	client.Connection.Write([]byte(Color_string(help_string, client.Color)))
 }
 
-func Handle_exit_command(client client.Client, args []string) {
+func Handle_exit_command(client client.Client) {
 	client.Connection.Write([]byte(Color_string(("See you soon " + client.Name + ".\n"), client.Color)))
 	fmt.Println(Color_string((client.Name + " is leaving the server."), client.Color))
 	client.Connection.Close()
@@ -156,7 +177,7 @@ func Handle_command1(client client.Client, args []string) {
 		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
 		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
 	} else {
-		output, good_format := Command1(args)
+		output, good_format := command1(args)
 
 		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
 		if !good_format {
@@ -174,7 +195,7 @@ func Handle_command2(client client.Client, args []string) {
 		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
 		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
 	} else {
-		output := Command2(args)
+		output := command2(args)
 
 		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
 		client.Connection.Write([]byte(Color_string("Response: "+strconv.Itoa(output)+"\n", client.Color)))
@@ -188,7 +209,7 @@ func Handle_command3(client client.Client, args []string) {
 		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
 		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
 	} else {
-		output, good_format := Command3(args)
+		output, good_format := command3(args)
 
 		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
 		if !good_format {
@@ -206,7 +227,7 @@ func Handle_command4(client client.Client, args []string) {
 		client.Connection.Write([]byte(Color_string("The command need at least 2 arguments\n", client.Color)))
 		fmt.Println(Color_string((client.Name + " - the command1 request was invalid."), client.Color))
 	} else {
-		output, good_format := Command4(args)
+		output, good_format := command4(args)
 
 		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
 		if !good_format {
@@ -214,6 +235,20 @@ func Handle_command4(client client.Client, args []string) {
 		} else {
 			client.Connection.Write([]byte(Color_string("Response: "+fmt.Sprint(output)+"\n", client.Color)))
 		}
+	}
+}
+
+func Handle_command5(client client.Client, args []string) {
+	fmt.Println(Color_string((client.Name + " sent a command1 request."), client.Color))
+
+	if len(args) < 1 {
+		client.Connection.Write([]byte(Color_string("No arguments provided, please try again.\n", client.Color)))
+		fmt.Println(Color_string((client.Name + " - the command5 request was invalid."), client.Color))
+	} else {
+		output := command5(args)
+
+		fmt.Println(Color_string(("Server is sending a response to " + client.Name + "."), client.Color))
+		client.Connection.Write([]byte(Color_string("Response: "+strings.Join(output, " ")+"\n", client.Color)))
 	}
 }
 

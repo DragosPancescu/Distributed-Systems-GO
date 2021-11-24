@@ -52,12 +52,12 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 			// Handle help command.
 			case "/help":
 				{
-					common.Handle_help_command(new_client, args)
+					common.Handle_help_command(new_client, cfg.Help_file_path)
 				}
 			// Handle exit command.
 			case "/exit":
 				{
-					common.Handle_exit_command(new_client, args)
+					common.Handle_exit_command(new_client)
 					return
 				}
 			// Handle command1 command.
@@ -79,6 +79,11 @@ func handle_connection(conn net.Conn, cfg common.Config) {
 			case "/command4":
 				{
 					common.Handle_command4(new_client, args)
+				}
+			// Handle command5 command.
+			case "/command5":
+				{
+					common.Handle_command5(new_client, args)
 				}
 			// Unknown command, alert the user and prompt for another command.
 			default:

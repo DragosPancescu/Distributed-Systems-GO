@@ -5,6 +5,7 @@ The server has a bunch of commands to try, you can call them using /command_name
 - /command2 [args] - returns the number of integers that are perfect squares, found in the arguments list (arg element should look like ab1cd5i)
 - /command3 [args] - returns the sum of the arguments list after their digits are reversed (args should be a list of integers).
 - /command4 [args] - returns the arithmetic mean of the elements that have the digit sum between the first 2 arguments (args should be a list of integers)
+- /command5 [args] - returns a list of converted to base 10 arg elements that are in base 2(args should be a list of strings and base2 integers)
 - /exit -> Exits the server.
 
 ~

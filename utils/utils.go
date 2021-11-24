@@ -57,11 +57,17 @@ func Reverse_number(input string) (int, bool) {
 // Extracts a number from a string (Ex: a1b4c2 -> 142)
 func Extract_number(input string) (int, bool) {
 	output := 0
-	extracted_any := false
 
+	extracted_any := false
 	for i := 0; i < len(input); i++ {
 		if unicode.IsDigit(rune(input[i])) {
 			digit, _ := strconv.Atoi(string(input[i]))
+
+			// First digit should not be 0
+			if output == 0 && digit == 0 {
+				return -1, false
+			}
+
 			output = output*10 + digit
 			extracted_any = true
 		}
@@ -88,4 +94,16 @@ func Digits_sum(input int) int {
 	}
 
 	return sum
+}
+
+// Check if string is base2 number
+func Check_binary(input string) bool {
+
+	for i := 0; i < len(input); i++ {
+		if input[i] != '0' && input[i] != '1' {
+			return false
+		}
+	}
+
+	return true
 }

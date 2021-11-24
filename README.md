@@ -26,5 +26,5 @@ Or if you have changed the port number:
 3. `/command2 [args]` - returns the number of integers that are perfect squares, found in the arguments list (arg element should look like *ab1cd5i*)
 4. `/command3 [args]` - returns the sum of the arguments list after their digits are reversed (args should be a list of integers).
 5. `/command4 [args]` - returns the arithmetic mean of the elements that have the digit sum between the first 2 arguments (args should be a list of integers)
-6. `/command5 [args]` - TODO
+6. `/command5 [args]` - returns a list of converted to base 10 arg elements that are in base 2(args should be a list of strings and base2 integers)
 7. `/exit` - exits the server
