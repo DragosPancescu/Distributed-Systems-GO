@@ -1,4 +1,4 @@
-# Welcome to Client-Server Application for the Distributed Systems Laboratory
+# Client-Server Architecture using GO
 
 [![made-with-Go](https://img.shields.io/badge/Made%20with-Go-1f425f.svg)](http://golang.org) [![GitHub go.mod Go version of a Go module](https://img.shields.io/github/go-mod/go-version/gomods/athens.svg)](https://github.com/gomods/athens)
 
